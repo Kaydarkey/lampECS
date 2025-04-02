@@ -1,19 +1,34 @@
 <?php
-require 'vendor/autoload.php';  // Load dotenv
+$host = getenv('MYSQL_HOST');
+$dbname = getenv('MYSQL_DATABASE');
+$username = getenv('MYSQL_USER');
+$password = getenv('MYSQL_PASSWORD');
 
-use Dotenv\Dotenv;
+try {
+    // Connect to MySQL
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+    // Check if the 'users' table exists using INFORMATION_SCHEMA
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :dbname AND TABLE_NAME = 'users'");
+    $stmt->execute([':dbname' => $dbname]);
+    $tableExists = $stmt->fetchColumn();
 
-$host = $_ENV["MYSQL_HOST"];
-$user = $_ENV["MYSQL_USER"];
-$pass = $_ENV["MYSQL_PASSWORD"];
-$dbname = $_ENV["MYSQL_DATABASE"];
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    if (!$tableExists) {
+        // Create the 'users' table if it doesn't exist
+        $sql = "
+        CREATE TABLE users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL UNIQUE,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL
+        );
+        ";
+        $pdo->exec($sql);
+        echo "Table 'users' created successfully.\n";
+    }
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    die("Database error. Please check logs.");
 }
 ?>

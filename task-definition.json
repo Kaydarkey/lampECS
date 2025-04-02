@@ -1,0 +1,19 @@
+{
+    "family": "lamp-task",
+    "containerDefinitions": [
+      {
+        "name": "lamp-container",
+        "image": "122610498016.dkr.ecr.eu-west-1.amazonaws.com/lamp-app:latest",
+        "memory": 512,
+        "cpu": 256,
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "hostPort": 80
+          }
+        ]
+      }
+    ]
+  }
+  

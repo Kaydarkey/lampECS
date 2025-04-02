@@ -12,7 +12,7 @@ services:
     depends_on:
       - phpmyadmin  
     environment:
-      - MYSQL_HOST=172.19.0.1 # Connect to local MySQL
+      - MYSQL_HOST=proxy-1743583471687-lampdatabase.proxy-cxcosy6qkohl.eu-west-1.rds.amazonaws.com # Connect to local MySQL
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}

@@ -1,20 +1,34 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+$host = getenv('MYSQL_HOST');
+$dbname = getenv('MYSQL_DATABASE');
+$username = getenv('MYSQL_USER');
+$password = getenv('MYSQL_PASSWORD');
 
-// Get the entire secret as JSON
-$secretJson = getenv('MYSQL_SECRET') ?: die("Error: Missing MYSQL_SECRET");
-$secret = json_decode($secretJson, true);
+try {
+    // Connect to MySQL
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Extract values
-$dbhost = $secret['MYSQL_HOST'] ?? die("Error: Missing DB_HOST in secret");
-$dbuser = $secret['MYSQL_USER'] ?? die("Error: Missing DB_USER in secret");
-$dbpass = $secret['MYSQL_PASSWORD'] ?? '';
-$dbname = $secret['MYSQL_DATABASE'] ?? die("Error: Missing DB_NAME in secret");
+    // Check if the 'users' table exists using INFORMATION_SCHEMA
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :dbname AND TABLE_NAME = 'users'");
+    $stmt->execute([':dbname' => $dbname]);
+    $tableExists = $stmt->fetchColumn();
 
-// Establish connection
-$connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-
-if (!$connection) {
-    die("Database connection failed: " . mysqli_connect_error());
+    if (!$tableExists) {
+        // Create the 'users' table if it doesn't exist
+        $sql = "
+        CREATE TABLE users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL UNIQUE,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL
+        );
+        ";
+        $pdo->exec($sql);
+        echo "Table 'users' created successfully.\n";
+    }
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    die("Database error. Please check logs.");
 }
 ?>

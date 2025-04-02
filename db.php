@@ -1,21 +1,19 @@
 <?php
-require __DIR__ . '/vendor/autoload.php'; // Load Composer dependencies
-use Dotenv\Dotenv;
-// Load .env file
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-// Retrieve database credentials
-$dbhost = $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
-$dbuser = $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
-$dbpass = $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
-$dbname = $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE');
-// Ensure all required variables are set
-if (!$dbhost || !$dbuser || !$dbname) {
-    die("Error: Missing required database environment variables.");
-}
-// Establish database connection
+require __DIR__ . '/vendor/autoload.php';
+
+// Get the entire secret as JSON
+$secretJson = getenv('MYSQL_SECRET') ?: die("Error: Missing DB_SECRET");
+$secret = json_decode($secretJson, true);
+
+// Extract values
+$dbhost = $secret['MYSQL_HOST'] ?? die("Error: Missing DB_HOST in secret");
+$dbuser = $secret['MYSQL_USER'] ?? die("Error: Missing DB_USER in secret");
+$dbpass = $secret['MYSQL_PASSWORD'] ?? '';
+$dbname = $secret['MYSQL_DATABASE'] ?? die("Error: Missing DB_NAME in secret");
+
+// Establish connection
 $connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-// Check connection
+
 if (!$connection) {
     die("Database connection failed: " . mysqli_connect_error());
 }

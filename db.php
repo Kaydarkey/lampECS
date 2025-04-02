@@ -1,16 +1,16 @@
 <?php
-require __DIR__ . '/vendor/autoload.php'; // Load Composer dependencies
+/*require __DIR__ . '/vendor/autoload.php'; // Load Composer dependencies
 use Dotenv\Dotenv;
 
 // Load .env file
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-
+*/
 // Retrieve database credentials
-$dbhost = $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
-$dbuser = $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
-$dbpass = $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
-$dbname = $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE');
+$dbhost = "lampdatabase.cxcosy6qkohl.eu-west-1.rds.amazonaws.com";
+$dbuser = "root";
+$dbpass = "sylvester7890&";
+$dbname = "lampdatabase";
 
 // Ensure all required variables are set
 if (!$dbhost || !$dbuser || !$dbname) {

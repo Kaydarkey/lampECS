@@ -7,12 +7,10 @@ services:
     restart: always
     ports:
       - "8082:80"
-    env_file:
-      - .env  # Load environment variables from .env file
     depends_on:
-      - phpmyadmin  
+      - phpmyadmin
     environment:
-      - MYSQL_HOST=proxy-1743583471687-lampdatabase.proxy-cxcosy6qkohl.eu-west-1.rds.amazonaws.com # Connect to RDS
+      - MYSQL_HOST=${MYSQL_HOST}  # Connect to RDS
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -23,9 +21,7 @@ services:
     restart: always
     ports:
       - "8081:80"
-    env_file:
-      - .env
     environment:
-      - PMA_HOST=proxy-1743583471687-lampdatabase.proxy-cxcosy6qkohl.eu-west-1.rds.amazonaws.com  # Connect to RDS
+      - PMA_HOST=${MYSQL_HOST}  # Connect to RDS
       - PMA_PORT=3306
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}

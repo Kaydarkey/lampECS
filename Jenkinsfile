@@ -6,9 +6,9 @@ pipeline {
         AWS_ACCOUNT_ID = '122610498016'
         ECR_REPO_NAME = 'lamp-app'
         ECS_CLUSTER_NAME = 'lampapp-cluster'
-        ECS_SERVICE_NAME = 'lamp-service'
-        ECS_TASK_FAMILY = 'lamp-task'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        ECS_SERVICE_NAME = 'lampapp-service'
+        ECS_TASK_FAMILY = 'lampapp-task'
+        IMAGE_TAG = "latest"
     }
 
     stages {

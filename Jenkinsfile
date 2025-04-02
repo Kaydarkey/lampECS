@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'eu-west-1'  // Change to your AWS region
+        AWS_REGION = 'eu-west-1'
         AWS_ACCOUNT_ID = '122610498016'
         ECR_REPO_NAME = 'lamp-app'
         ECS_CLUSTER_NAME = 'lamp-cluster'
@@ -15,35 +15,21 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/Kaydarkey/lampECS.git'
-                sh """
-                   aws --version
-                """
+                sh "aws --version"
             }
         }
 
         stage('Login to ECR') {
-    steps {
-        script {
-            sh """
-                /usr/local/bin/aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-            """
-        }
-    }
-}
-
-
-        stage('Login to Amazon ECR') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     sh """
                         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-                        echo "login successful"
                     """
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Tag Docker Image') {
             steps {
                 script {
                     sh """

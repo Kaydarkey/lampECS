@@ -42,7 +42,7 @@ pipeline {
 
         stage('Push Image to ECR') {
             steps {
-                withAWS(credentials: 'AWS_CREDENTIALS', region: "${AWS_REGION}") {
+                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     sh """
                         docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:$IMAGE_TAG
                     """
@@ -52,7 +52,7 @@ pipeline {
 
         stage('Update ECS Service') {
             steps {
-                withAWS(credentials: 'AWS_CREDENTIALS', region: "${AWS_REGION}") {
+                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     sh """
                         aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $ECS_SERVICE_NAME --force-new-deployment
                     """

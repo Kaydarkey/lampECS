@@ -1,34 +1,27 @@
 <?php
-$host = getenv('MYSQL_HOST');
-$dbname = getenv('MYSQL_DATABASE');
-$username = getenv('MYSQL_USER');
-$password = getenv('MYSQL_PASSWORD');
+require __DIR__ . '/vendor/autoload.php'; // Load Composer dependencies
+use Dotenv\Dotenv;
 
-try {
-    // Connect to MySQL
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Load .env file
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
-    // Check if the 'users' table exists using INFORMATION_SCHEMA
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :dbname AND TABLE_NAME = 'users'");
-    $stmt->execute([':dbname' => $dbname]);
-    $tableExists = $stmt->fetchColumn();
+// Retrieve database credentials
+$dbhost = $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST');
+$dbuser = $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER');
+$dbpass = $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD');
+$dbname = $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE');
 
-    if (!$tableExists) {
-        // Create the 'users' table if it doesn't exist
-        $sql = "
-        CREATE TABLE users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(255) NOT NULL UNIQUE,
-            email VARCHAR(255) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL
-        );
-        ";
-        $pdo->exec($sql);
-        echo "Table 'users' created successfully.\n";
-    }
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    die("Database error. Please check logs.");
+// Ensure all required variables are set
+if (!$dbhost || !$dbuser || !$dbname) {
+    die("Error: Missing required database environment variables.");
+}
+
+// Establish database connection
+$connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+// Check connection
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
 }
 ?>

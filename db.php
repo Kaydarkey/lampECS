@@ -21,7 +21,7 @@ if (!$dbhost || !$dbuser || !$dbname) {
 $connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
 // Check connection
-if (!$conn) {
+if (!$connection) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 ?>

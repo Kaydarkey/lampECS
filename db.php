@@ -1,5 +1,5 @@
 <?php
-$host = "proxy-1743583471687-lampdatabase.proxy-cxcosy6qkohl.eu-west-1.rds.amazonaws.com";
+$host = "lampdatabase.cxcosy6qkohl.eu-west-1.rds.amazonaws.com";
 $dbname = "lampdatabase";
 $username = "root";
 $password = "sylvester7890&";

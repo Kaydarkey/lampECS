@@ -2,7 +2,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 // Get the entire secret as JSON
-$secretJson = getenv('MYSQL_SECRET') ?: die("Error: Missing DB_SECRET");
+$secretJson = getenv('MYSQL_SECRET') ?: die("Error: Missing MYSQL_SECRET");
 $secret = json_decode($secretJson, true);
 
 // Extract values

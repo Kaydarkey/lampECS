@@ -1,19 +1,112 @@
 {
-    "family": "lamp-task",
-    "containerDefinitions": [
+  "taskDefinitionArn": "arn:aws:ecs:eu-west-1:122610498016:task-definition/lampapp-task:6",
+  "containerDefinitions": [
       {
-        "name": "lamp-container",
-        "image": "122610498016.dkr.ecr.eu-west-1.amazonaws.com/lamp-app:latest",
-        "memory": 512,
-        "cpu": 256,
-        "essential": true,
-        "portMappings": [
-          {
-            "containerPort": 80,
-            "hostPort": 80
-          }
-        ]
+          "name": "lamp-app",
+          "image": "122610498016.dkr.ecr.eu-west-1.amazonaws.com/lamp-app:latest",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "lamp-app-80-tcp",
+                  "containerPort": 80,
+                  "hostPort": 80,
+                  "protocol": "tcp",
+                  "appProtocol": "http"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "MYSQL_DATABASE",
+                  "value": "lampdatabase"
+              },
+              {
+                  "name": "MYSQL_PASSWORD",
+                  "value": "sylvester7890&"
+              },
+              {
+                  "name": "MYSQL_HOST",
+                  "value": "lampdatabase.cxcosy6qkohl.eu-west-1.rds.amazonaws.com"
+              },
+              {
+                  "name": "MYSQL_USER",
+                  "value": "root"
+              }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "ulimits": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/ecs/lampapp-task",
+                  "mode": "non-blocking",
+                  "awslogs-create-group": "true",
+                  "max-buffer-size": "25m",
+                  "awslogs-region": "eu-west-1",
+                  "awslogs-stream-prefix": "ecs"
+              },
+              "secretOptions": []
+          },
+          "systemControls": []
       }
-    ]
-  }
-  
+  ],
+  "family": "lampapp-task",
+  "taskRoleArn": "arn:aws:iam::122610498016:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::122610498016:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 6,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+      {
+          "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+      },
+      {
+          "name": "ecs.capability.execution-role-awslogs"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.ecr-auth"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.task-iam-role"
+      },
+      {
+          "name": "ecs.capability.execution-role-ecr-pull"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+      },
+      {
+          "name": "ecs.capability.task-eni"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+      }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+      "EC2",
+      "FARGATE"
+  ],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2025-04-02T15:54:24.505Z",
+  "registeredBy": "arn:aws:iam::122610498016:user/slydar",
+  "enableFaultInjection": false,
+  "tags": []
+}

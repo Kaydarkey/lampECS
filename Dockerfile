@@ -1,4 +1,3 @@
-# Use a lightweight PHP-Apache base image
 FROM php:8.2-apache
 
 # Set correct working directory for Apache

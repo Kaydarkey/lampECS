@@ -3,19 +3,17 @@ include 'db.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    $usernameInput = $_POST["username"];
+    $passwordInput = $_POST["password"];
 
-    $stmt = $connection->prepare("SELECT id, username, password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($id, $username, $hashed_password);
-    $stmt->fetch();
+    $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ?");
+    $stmt->execute([$usernameInput]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (password_verify($password, $hashed_password)) {
-        $_SESSION["username"] = $username;
+    if ($user && password_verify($passwordInput, $user['password'])) {
+        $_SESSION["username"] = $user['username'];
         header("Location: welcome.php");
+        exit;
     } else {
         echo "<p class='error'>Invalid credentials.</p>";
     }

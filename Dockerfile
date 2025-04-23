@@ -1,31 +1,27 @@
+# Use an official PHP image with Apache
 FROM php:8.2-apache
-
-# Set correct working directory for Apache
+# Install required PHP extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+# Install CloudWatch Agent to capture logs
+RUN apt-get update && \
+    apt-get install -y wget jq 
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+# Set working directory
 WORKDIR /var/www/html
-
-# Install required dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd mysqli pdo pdo_mysql \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Fix Apache ServerName warning
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# Copy application files
-COPY . .
-
-# Copy composer to install necessary php extensions
-COPY composer.json composer.lock ./
-
-# Set secure file permissions
-RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
-
-# Expose port 80 for HTTP traffic
+RUN mkdir -p /var/www/html/php
+# Copy the application files into the container
+COPY ./php/ /var/www/html/php/
+# Set permissions for the application files
+RUN chown -R www-data:www-data /var/www/html/php
+RUN chmod -R 755 /var/www/html/php
+# Configure Apache to log to stdout and stderr
+RUN echo "ErrorLog /proc/self/fd/2" >> /etc/apache2/apache2.conf && \
+    echo "CustomLog /proc/self/fd/1 combined" >> /etc/apache2/apache2.conf
+# Copy startup script into container
+COPY startup.sh /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh
+# Expose port 80 for Apache
 EXPOSE 80
-
-# Start Apache
-CMD ["apache2-foreground"]
+# Run startup script on container start
+CMD ["/usr/local/bin/startup.sh"]

@@ -1,27 +1,16 @@
-version: "3.8"
+version: '3.8'
 
 services:
   app:
     build: .
-    container_name: lamp-app
-    restart: always
+    container_name: lamp_app_container
     ports:
-      - "80:80"
-    # depends_on:
-    #   - phpmyadmin
-    # environment:
-    #   - MYSQL_HOST=${MYSQL_HOST}  # Connect to RDS
-    #   - MYSQL_USER=${MYSQL_USER}
-    #   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    #   - MYSQL_DATABASE=${MYSQL_DATABASE}
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: lamp_phpmyadmin
-    restart: always
-    ports:
-      - "8081:80"
+      - "8084:80"
     environment:
-      - PMA_HOST=${MYSQL_HOST}  # Connect to RDS
-      - PMA_PORT=3306
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - DB_USERNAME=root
+      - DB_NAME=lampdatabase
+      - DB_PASSWORD=@Kafui2002
+      - DB_HOST=192.168.23.64
+    volumes:
+      - ./php:/var/www/html/php
+    restart: always

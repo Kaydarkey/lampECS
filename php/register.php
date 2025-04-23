@@ -6,15 +6,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
-    $stmt = $connection->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $email, $password);
-
-    if ($stmt->execute()) {
-        header("Location: index.php?signup=success");
-    } else {
-        echo "Error: " . $stmt->error;
+    try {
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        if ($stmt->execute([$username, $email, $password])) {
+            header("Location: index.php?signup=success");
+            exit;
+        } else {
+            echo "<p class='error'>Something went wrong. Please try again.</p>";
+        }
+    } catch (PDOException $e) {
+        echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
     }
-    $stmt->close();
 }
 ?>
 

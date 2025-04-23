@@ -7,14 +7,23 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 */
 // Retrieve database credentials from AWS Secrets Manager
+// Make sure AWS SDK is properly installed via composer: composer require aws/aws-sdk-php
 require 'vendor/autoload.php';
 
-use Aws\SecretsManager\SecretsManagerClient;
+use Aws\SecretsManager\SecretsManagerClient; 
 use Aws\Exception\AwsException;
+
+// Configure AWS credentials before creating client
+putenv('AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY');
+putenv('AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY');
 
 $client = new SecretsManagerClient([
     'version' => 'latest',
-    'region'  => 'eu-west-1'
+    'region'  => 'eu-west-1',
+    'credentials' => [
+        'key'    => getenv('AWS_ACCESS_KEY_ID'),
+        'secret' => getenv('AWS_SECRET_ACCESS_KEY')
+    ]
 ]);
 
 try {

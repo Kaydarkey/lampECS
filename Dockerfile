@@ -18,6 +18,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy application files
 COPY . .
 
+# Copy composer to install necessary php extensions
+COPY composer.json composer.lock ./
+
 # Set secure file permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 

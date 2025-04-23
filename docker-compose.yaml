@@ -7,13 +7,13 @@ services:
     restart: always
     ports:
       - "80:80"
-    depends_on:
-      - phpmyadmin
-    environment:
-      - MYSQL_HOST=${MYSQL_HOST}  # Connect to RDS
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    # depends_on:
+    #   - phpmyadmin
+    # environment:
+    #   - MYSQL_HOST=${MYSQL_HOST}  # Connect to RDS
+    #   - MYSQL_USER=${MYSQL_USER}
+    #   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    #   - MYSQL_DATABASE=${MYSQL_DATABASE}
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

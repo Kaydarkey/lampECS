@@ -1,9 +1,14 @@
 <?php
-include 'db.php';
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;unix_socket=/var/run/mysqld/mysqld.sock", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
-    $email = $_POST["email"];
+    $email = $_POST["email"]; 
     $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
     try {

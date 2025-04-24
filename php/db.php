@@ -4,26 +4,16 @@ $dbname = getenv('DB_NAME');
 $username = getenv('DB_USER'); 
 $password = getenv('DB_PASS');
 
-// Add error logging
-error_log("Attempting to connect to database: host=$host, dbname=$dbname, user=$username");
-
 try {
+    // For RDS connections, always use TCP/IP rather than Unix socket
     $dsn = "mysql:host={$host};port=3306;dbname={$dbname};charset=utf8mb4";
     
-    // Increase timeout for connection
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_TIMEOUT => 15, // 15-second timeout
-    ];
-    
-    $pdo = new PDO($dsn, $username, $password, $options);
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    error_log("Database connection successful");
-    
     // Check if users table exists
     $stmt = $pdo->query("SHOW TABLES LIKE 'users'");
     if($stmt->rowCount() == 0) {
-        error_log("Creating users table");
         // Create users table if it doesn't exist
         $sql = "CREATE TABLE users (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -35,6 +25,5 @@ try {
         $pdo->exec($sql);
     }
 } catch(PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
     echo "Connection failed: " . $e->getMessage();
 }

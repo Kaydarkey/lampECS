@@ -4,7 +4,8 @@ set -e
 # Set ServerName to suppress warning
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-DB_SECRETS=$(aws secretsmanager list-secrets --filters Key=description,Values="RDS instance credentials" --query 'SecretList[0].ARN' --output text | xargs -I {} aws secretsmanager get-secret-value --secret-id {} --query SecretString --output text)
+SECRET_NAME=$(aws secretsmanager list-secrets --query "SecretList[?Description=='RDS instance credentials'].Name" --output text)
+DB_SECRETS=$(aws secretsmanager get-secret-value --secret-id "$SECRET_NAME" --query SecretString --output text)
 # Parse the JSON string from the DB_SECRETS variable
 export DB_USERNAME=$(echo $DB_SECRETS | jq -r '.DBUsername')
 export DB_PASSWORD=$(echo $DB_SECRETS | jq -r '.DBPassword')

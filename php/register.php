@@ -1,5 +1,14 @@
 <?php
-include 'db.php';
+try {
+    include 'db.php';
+} catch (Exception $e) {
+    die("<p class='error'>Database connection failed: " . $e->getMessage() . "</p>");
+}
+
+// Check if database connection exists
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    die("<p class='error'>Database connection not established</p>");
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];

@@ -5,12 +5,12 @@ services:
     build: .
     container_name: lamp_app_container
     ports:
-      - "8084:80"
-    environment:
-      - DB_USERNAME=root
-      - DB_NAME=lampdatabase
-      - DB_PASSWORD=@Kafui2002
-      - DB_HOST=192.168.23.64
+      - "80:80"
+    # environment:
+    #   - DB_USERNAME=root
+    #   - DB_NAME=lampdatabase
+    #   - DB_PASSWORD=@Kafui2002
+    #   - DB_HOST=192.168.23.64
     volumes:
       - ./php:/var/www/html/php
     restart: always

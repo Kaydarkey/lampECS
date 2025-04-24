@@ -4,15 +4,6 @@ set -e
 # Set ServerName to suppress warning
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-SECRET_NAME=$(aws secretsmanager list-secrets --query "SecretList[?Description=='RDS instance credentials'].Name" --output text)
-DB_SECRETS=$(aws secretsmanager get-secret-value --secret-id "$SECRET_NAME" --query SecretString --output text)
-# Parse the JSON string from the DB_SECRETS variable
-export DB_USERNAME=$(echo $DB_SECRETS | jq -r '.DBUsername')
-export DB_PASSWORD=$(echo $DB_SECRETS | jq -r '.DBPassword')
-export DB_NAME=$(echo $DB_SECRETS | jq -r '.DBName')
-export DB_HOST=$(echo $DB_SECRETS | jq -r '.RDSEndpoint')
-
-
 # Set up Apache environment variables
 echo "export DB_USER=$DB_USERNAME" >> /etc/apache2/envvars
 echo "export DB_PASS=$DB_PASSWORD" >> /etc/apache2/envvars

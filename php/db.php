@@ -1,11 +1,16 @@
 <?php
 $host = getenv('DB_HOST');
 $dbname = getenv('DB_NAME');
-$username = getenv('DB_USER');
+$username = getenv('DB_USER'); 
 $password = getenv('DB_PASS');
 
 try {
-    $dsn = "mysql:host={$host};port=3306;dbname={$dbname};charset=utf8mb4"; // force TCP
+    // Add socket path for local connections to fix "No such file or directory" error
+    if ($host === 'localhost' || $host === '127.0.0.1') {
+        $dsn = "mysql:unix_socket=/tmp/mysql.sock;dbname={$dbname};charset=utf8mb4";
+    } else {
+        $dsn = "mysql:host={$host};port=3306;dbname={$dbname};charset=utf8mb4";
+    }
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
